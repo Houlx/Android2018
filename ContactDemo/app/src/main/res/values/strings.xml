@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">ContactDemo</string>
+    <string name="contact_icon">contact icon</string>
+    <string name="phone">phone</string>
+    <string name="email">email</string>
+    <string name="address">address</string>
+</resources>
