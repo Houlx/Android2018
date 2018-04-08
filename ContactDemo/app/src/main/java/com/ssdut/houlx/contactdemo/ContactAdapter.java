@@ -3,6 +3,7 @@ package com.ssdut.houlx.contactdemo;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,6 +45,10 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
             public void onClick(View v) {
                 int position = holder.getAdapterPosition();
                 Contact contact = mContactList.get(position);
+
+//                Log.d("onCreateViewHolder", contact.getPhone());
+                Log.d("PointerViewHolder", Integer.toString(contact.hashCode()));
+
                 //TODO: Start a new Activity to show detail of clicked contact.
                 Intent intent = new Intent(parent.getContext(), ContactDetailActivity.class);
                 intent.putExtra("contact", contact);
@@ -55,6 +60,9 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
             public void onClick(View v) {
                 int position = holder.getAdapterPosition();
                 Contact contact = mContactList.get(position);
+
+                Log.d("onCreateViewHolder", contact.getPhone());
+
                 //TODO: Start a new Activity as above.
                 Intent intent = new Intent(parent.getContext(), ContactDetailActivity.class);
                 intent.putExtra("contact", contact);
