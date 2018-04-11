@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">SecondHandTransactionSystem</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="register">Register</string>
+    <string name="save">Save</string>
+    <string name="invalid_account">Invalid Account</string>
+</resources>
