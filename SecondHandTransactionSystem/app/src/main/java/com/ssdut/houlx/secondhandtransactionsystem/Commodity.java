@@ -1,9 +1,11 @@
 package com.ssdut.houlx.secondhandtransactionsystem;
 
+import org.litepal.crud.DataSupport;
+
 /**
  * @author houlx
  */
-public class Commodity {
+public class Commodity extends DataSupport {
     private String name;
     private String type;
     private double price;

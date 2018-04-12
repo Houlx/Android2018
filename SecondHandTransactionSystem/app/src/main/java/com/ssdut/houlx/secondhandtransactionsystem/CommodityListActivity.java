@@ -26,7 +26,6 @@ public class CommodityListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_commodity_list);
 
 
-
         initCommodity();
         RecyclerView recyclerView = findViewById(R.id.recycler_view_commodity_list);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -45,7 +44,7 @@ public class CommodityListActivity extends AppCompatActivity {
     }
 
     private void initCommodity() {
-        //TODO: Read commodity information from LitePal database.
         Connector.getDatabase();
+        //TODO: Read commodity information from LitePal database.
     }
 }
