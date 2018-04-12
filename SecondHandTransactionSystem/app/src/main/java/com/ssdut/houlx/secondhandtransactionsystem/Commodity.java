@@ -1,22 +1,16 @@
 package com.ssdut.houlx.secondhandtransactionsystem;
 
-enum Type {
-    TYPE_1,
-    TYPE_2,
-    TYPE_3
-}
-
 /**
  * @author houlx
  */
 public class Commodity {
     private String name;
-    private Type type;
+    private String type;
     private double price;
     private int imageId;
     private String description;
 
-    Commodity(String name, Type type, double price, int imageId, String description) {
+    Commodity(String name, String type, double price, int imageId, String description) {
         this.name = name;
         this.type = type;
         this.price = price;
@@ -32,11 +26,11 @@ public class Commodity {
         this.name = name;
     }
 
-    public Type getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(Type type) {
+    public void setType(String type) {
         this.type = type;
     }
 

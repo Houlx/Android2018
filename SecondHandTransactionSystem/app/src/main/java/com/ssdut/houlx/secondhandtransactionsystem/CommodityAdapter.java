@@ -9,6 +9,9 @@ import android.widget.TextView;
 
 import java.util.List;
 
+/**
+ * @author houlx
+ */
 public class CommodityAdapter extends RecyclerView.Adapter<CommodityAdapter.ViewHolder> {
     private List<Commodity> mCommodityList;
 

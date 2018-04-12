@@ -7,4 +7,9 @@
     <string name="save">Save</string>
     <string name="invalid_account">Invalid Account</string>
     <string name="register_success">Register Success</string>
+    <string name="commodity_name">Commodity Name</string>
+    <string name="price">Price</string>
+    <string name="submit">Submit</string>
+    <string name="description">Description</string>
+    <string name="image">Image</string>
 </resources>

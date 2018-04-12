@@ -1,11 +1,14 @@
 package com.ssdut.houlx.secondhandtransactionsystem;
 
+import android.content.Intent;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.Button;
+
+import org.litepal.tablemanager.Connector;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +25,8 @@ public class CommodityListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_commodity_list);
 
+
+
         initCommodity();
         RecyclerView recyclerView = findViewById(R.id.recycler_view_commodity_list);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -29,16 +34,18 @@ public class CommodityListActivity extends AppCompatActivity {
         CommodityAdapter adapter = new CommodityAdapter(commodityList);
         recyclerView.setAdapter(adapter);
 
-        Button buttonAddCommodity = findViewById(R.id.button_add_commodity);
+        FloatingActionButton buttonAddCommodity = findViewById(R.id.button_add_commodity);
         buttonAddCommodity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(CommodityListActivity.this, CommodityReleaseActivity.class);
+                startActivity(intent);
             }
         });
     }
 
     private void initCommodity() {
         //TODO: Read commodity information from LitePal database.
+        Connector.getDatabase();
     }
 }
