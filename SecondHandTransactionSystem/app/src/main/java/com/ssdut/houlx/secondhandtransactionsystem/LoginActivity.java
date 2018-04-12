@@ -33,7 +33,7 @@ public class LoginActivity extends AppCompatActivity {
                 String username = preferences.getString("username", "");
                 String password = preferences.getString("password", "");
                 if (!"".equals(username) && !"".equals(password) && username.equals(usernameInput) && password.equals(passwordInput)) {
-                    Intent intent = new Intent(LoginActivity.this, CommodityReleaseActivity.class);
+                    Intent intent = new Intent(LoginActivity.this, CommodityListActivity.class);
                     startActivity(intent);
                 } else {
                     Toast.makeText(LoginActivity.this, R.string.invalid_account, Toast.LENGTH_SHORT).show();
