@@ -32,7 +32,7 @@ public class LoginActivity extends AppCompatActivity {
                 SharedPreferences preferences = getSharedPreferences("user", MODE_PRIVATE);
                 String username = preferences.getString("username", "");
                 String password = preferences.getString("password", "");
-                if (username.equals(usernameInput) && password.equals(passwordInput)) {
+                if (!"".equals(username) && !"".equals(password) && username.equals(usernameInput) && password.equals(passwordInput)) {
                     Intent intent = new Intent(LoginActivity.this, CommodityReleaseActivity.class);
                     startActivity(intent);
                 } else {
