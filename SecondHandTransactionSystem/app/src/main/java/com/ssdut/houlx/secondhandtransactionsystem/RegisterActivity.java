@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 /**
  * @author houlx
@@ -27,6 +28,7 @@ public class RegisterActivity extends AppCompatActivity {
                 editor.putString("username", editTextRegisterUsername.getText().toString());
                 editor.putString("password", editTextRegisterPassword.getText().toString());
                 editor.apply();
+                Toast.makeText(RegisterActivity.this, R.string.register_success, Toast.LENGTH_SHORT).show();
                 finish();
             }
         });

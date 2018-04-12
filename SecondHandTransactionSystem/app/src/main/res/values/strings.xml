@@ -6,4 +6,5 @@
     <string name="register">Register</string>
     <string name="save">Save</string>
     <string name="invalid_account">Invalid Account</string>
+    <string name="register_success">Register Success</string>
 </resources>
