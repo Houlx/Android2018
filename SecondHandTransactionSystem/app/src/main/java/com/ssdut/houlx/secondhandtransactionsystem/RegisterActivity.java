@@ -25,11 +25,17 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 SharedPreferences.Editor editor = getSharedPreferences("user", MODE_PRIVATE).edit();
-                editor.putString("username", editTextRegisterUsername.getText().toString());
-                editor.putString("password", editTextRegisterPassword.getText().toString());
-                editor.apply();
-                Toast.makeText(RegisterActivity.this, R.string.register_success, Toast.LENGTH_SHORT).show();
-                finish();
+                String usernameInput;
+                String passwordInput;
+                if (!"".equals(usernameInput = editTextRegisterUsername.getText().toString()) && !"".equals(passwordInput = editTextRegisterPassword.getText().toString())) {
+                    editor.putString("username", usernameInput);
+                    editor.putString("password", passwordInput);
+                    editor.apply();
+                    Toast.makeText(RegisterActivity.this, R.string.register_success, Toast.LENGTH_SHORT).show();
+                    finish();
+                } else {
+                    Toast.makeText(RegisterActivity.this, "Cannot be null", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
