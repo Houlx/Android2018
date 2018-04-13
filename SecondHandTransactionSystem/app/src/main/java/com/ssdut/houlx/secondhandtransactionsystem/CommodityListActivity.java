@@ -47,9 +47,6 @@ public class CommodityListActivity extends AppCompatActivity {
 
     private void initCommodity() {
         Connector.getDatabase();
-        //TODO: Read commodity information from LitePal database.
-//        Commodity commodity = new Commodity("test", "test", 0, 0, "test");
-//        commodity.save();
         commodityList = DataSupport.findAll(Commodity.class);
     }
 
