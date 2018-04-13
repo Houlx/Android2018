@@ -12,4 +12,5 @@
     <string name="submit">Submit</string>
     <string name="description">Description</string>
     <string name="image">Image</string>
+    <string name="uncompleted_input">Uncompleted input</string>
 </resources>

@@ -28,7 +28,12 @@ public class CommodityAdapter extends RecyclerView.Adapter<CommodityAdapter.View
         mCommodityList = commodityList;
     }
 
+    public void setmCommodityList(List<Commodity> mCommodityList) {
+        this.mCommodityList = mCommodityList;
+    }
+
     @NonNull
+
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.commodity_list_item, parent, false);
