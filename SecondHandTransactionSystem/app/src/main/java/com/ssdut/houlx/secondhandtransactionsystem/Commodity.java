@@ -2,10 +2,12 @@ package com.ssdut.houlx.secondhandtransactionsystem;
 
 import org.litepal.crud.DataSupport;
 
+import java.io.Serializable;
+
 /**
  * @author houlx
  */
-public class Commodity extends DataSupport {
+public class Commodity extends DataSupport implements Serializable {
     private String name;
     private String type;
     private double price;

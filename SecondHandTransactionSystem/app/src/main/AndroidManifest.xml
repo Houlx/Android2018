@@ -19,7 +19,8 @@
         </activity>
         <activity android:name=".RegisterActivity" />
         <activity android:name=".CommodityListActivity" />
-        <activity android:name=".CommodityReleaseActivity"></activity>
+        <activity android:name=".CommodityReleaseActivity" />
+        <activity android:name=".CommodityInformationActivity"></activity>
     </application>
 
 </manifest>

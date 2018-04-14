@@ -1,5 +1,6 @@
 package com.ssdut.houlx.secondhandtransactionsystem;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -17,9 +18,11 @@ public class CommodityAdapter extends RecyclerView.Adapter<CommodityAdapter.View
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         TextView commodityName;
+        View commodityView;
 
         ViewHolder(View view) {
             super(view);
+            commodityView = view;
             commodityName = view.findViewById(R.id.textView_commodity_name);
         }
     }
@@ -35,9 +38,20 @@ public class CommodityAdapter extends RecyclerView.Adapter<CommodityAdapter.View
     @NonNull
 
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull final ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.commodity_list_item, parent, false);
-        return new ViewHolder(view);
+        final ViewHolder holder = new ViewHolder(view);
+        holder.commodityView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int position = holder.getAdapterPosition();
+                Commodity commodity = mCommodityList.get(position);
+                Intent intent = new Intent(parent.getContext(), CommodityInformationActivity.class);
+                intent.putExtra("commodity", commodity);
+                parent.getContext().startActivity(intent);
+            }
+        });
+        return holder;
     }
 
     @Override
