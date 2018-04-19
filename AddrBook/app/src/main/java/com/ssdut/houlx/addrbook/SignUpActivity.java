@@ -68,8 +68,8 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
 
-        TextView titleText = findViewById(R.id.title_text);
-        titleText.setText(R.string.title_activity_sign_up);
+//        TextView titleText = findViewById(R.id.title_text);
+//        titleText.setText(R.string.title_activity_sign_up);
         // Set up the login form.
         mEmailView = findViewById(R.id.email);
         populateAutoComplete();
@@ -322,12 +322,16 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
                         if (e == null) {
                             Intent intent = new Intent(SignUpActivity.this, ContactsActivity.class);
                             startActivity(intent);
+                            finish();
                         } else {
                             userLogin.signUp(new SaveListener<BmobUser>() {
                                 @Override
                                 public void done(BmobUser bmobUser, BmobException e) {
                                     if (e == null) {
                                         Toast.makeText(SignUpActivity.this, "SIGN UP SUCCESS", Toast.LENGTH_SHORT).show();
+                                        Intent intent = new Intent(SignUpActivity.this, ContactsActivity.class);
+                                        startActivity(intent);
+                                        finish();
                                     } else {
                                         Toast.makeText(SignUpActivity.this, "SIGN UP FAILED", Toast.LENGTH_SHORT).show();
                                     }
@@ -348,9 +352,7 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
             mAuthTask = null;
             showProgress(false);
 
-            if (success) {
-                finish();
-            } else {
+            if (!success) {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();
             }
