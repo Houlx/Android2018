@@ -4,6 +4,8 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
@@ -324,19 +326,35 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
                             startActivity(intent);
                             finish();
                         } else {
-                            userLogin.signUp(new SaveListener<BmobUser>() {
+                            AlertDialog.Builder dialog = new AlertDialog.Builder(SignUpActivity.this);
+                            dialog.setTitle("Caution");
+                            dialog.setMessage("Invalid Account. Do you want to sign up as a new account?");
+                            dialog.setCancelable(true);
+                            dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                 @Override
-                                public void done(BmobUser bmobUser, BmobException e) {
-                                    if (e == null) {
-                                        Toast.makeText(SignUpActivity.this, "SIGN UP SUCCESS", Toast.LENGTH_SHORT).show();
-                                        Intent intent = new Intent(SignUpActivity.this, ContactsActivity.class);
-                                        startActivity(intent);
-                                        finish();
-                                    } else {
-                                        Toast.makeText(SignUpActivity.this, "SIGN UP FAILED", Toast.LENGTH_SHORT).show();
-                                    }
+                                public void onClick(DialogInterface dialog, int which) {
+                                    userLogin.signUp(new SaveListener<BmobUser>() {
+                                        @Override
+                                        public void done(BmobUser bmobUser, BmobException e) {
+                                            if (e == null) {
+                                                Toast.makeText(SignUpActivity.this, "SIGN UP SUCCESS", Toast.LENGTH_SHORT).show();
+                                                Intent intent = new Intent(SignUpActivity.this, ContactsActivity.class);
+                                                startActivity(intent);
+                                                finish();
+                                            } else {
+                                                Toast.makeText(SignUpActivity.this, "SIGN UP FAILED", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    });
                                 }
                             });
+                            dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                }
+                            });
+                            dialog.show();
                         }
                     }
                 });
