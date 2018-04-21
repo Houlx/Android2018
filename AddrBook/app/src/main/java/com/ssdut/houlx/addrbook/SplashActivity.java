@@ -9,9 +9,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.WindowManager;
 
+import java.util.List;
+
 import cn.bmob.v3.Bmob;
+import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.SaveListener;
 
 /**
@@ -51,7 +55,18 @@ public class SplashActivity extends AppCompatActivity {
 
         BmobUser user = BmobUser.getCurrentUser();
         if (user != null) {
-            handler.sendEmptyMessageDelayed(GO_HOME, 2000);
+            BmobQuery<BmobUser> query = new BmobQuery<>();
+            query.addWhereEqualTo("username", user.getUsername());
+            query.findObjects(new FindListener<BmobUser>() {
+                @Override
+                public void done(List<BmobUser> list, BmobException e) {
+                    if (e == null) {
+                        handler.sendEmptyMessageDelayed(GO_HOME, 2000);
+                    } else {
+                        handler.sendEmptyMessageDelayed(GO_SIGNUP, 2000);
+                    }
+                }
+            });
         } else {
             handler.sendEmptyMessageDelayed(GO_SIGNUP, 2000);
         }
