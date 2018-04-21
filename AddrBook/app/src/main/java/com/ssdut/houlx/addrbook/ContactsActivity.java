@@ -14,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import cn.bmob.push.BmobPush;
 import cn.bmob.v3.BmobUser;
 
 /**
@@ -46,6 +47,8 @@ public class ContactsActivity extends AppCompatActivity
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+//        BmobPush.startWork(this);
     }
 
     @Override
