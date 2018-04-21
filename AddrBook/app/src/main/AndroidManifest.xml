@@ -29,8 +29,11 @@
         </activity>
         <activity
             android:name=".SignUpActivity"
-            android:label="@string/title_activity_sign_up"/>
-        <activity android:name=".ContactsActivity"></activity>
+            android:label="@string/action_sign_in" />
+        <activity
+            android:name=".ContactsActivity"
+            android:label="@string/title_activity_contacts"
+            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>
