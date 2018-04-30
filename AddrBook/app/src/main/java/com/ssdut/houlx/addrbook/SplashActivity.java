@@ -7,6 +7,7 @@ import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.WindowManager;
 
 import java.util.List;
@@ -19,6 +20,7 @@ import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.InstallationListener;
 import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.FetchUserInfoListener;
 import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.SaveListener;
 
@@ -59,14 +61,11 @@ public class SplashActivity extends AppCompatActivity {
         BmobInstallationManager.getInstance().initialize(new InstallationListener<BmobInstallation>() {
             @Override
             public void done(BmobInstallation bmobInstallation, BmobException e) {
-                if (e == null) {
-                    //Logger.i(bmobInstallation.getObjectId() + "-" + bmobInstallation.getInstallationId());
-                } else {
-                    //Logger.e(e.getMessage());
+                if (e != null) {
+                    e.printStackTrace();
                 }
             }
         });
-//        BmobPush.startWork(this);
 
         BmobUser user = BmobUser.getCurrentUser();
         if (user != null) {
@@ -77,6 +76,14 @@ public class SplashActivity extends AppCompatActivity {
                 public void done(List<BmobUser> list, BmobException e) {
                     if (e == null) {
                         handler.sendEmptyMessageDelayed(GO_HOME, 2000);
+                        BmobUser.fetchUserJsonInfo(new FetchUserInfoListener<String>() {
+                            @Override
+                            public void done(String s, BmobException e) {
+                                if (e != null) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
                     } else {
                         handler.sendEmptyMessageDelayed(GO_SIGNUP, 2000);
                     }

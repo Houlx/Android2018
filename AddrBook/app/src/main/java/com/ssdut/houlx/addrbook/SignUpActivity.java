@@ -42,6 +42,7 @@ import java.util.List;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.FetchUserInfoListener;
 import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.SaveListener;
 
@@ -327,6 +328,14 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
                         if (e == null) {
                             Intent intent = new Intent(SignUpActivity.this, ContactsActivity.class);
                             startActivity(intent);
+                            BmobUser.fetchUserJsonInfo(new FetchUserInfoListener<String>() {
+                                @Override
+                                public void done(String s, BmobException e) {
+                                    if (e != null) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            });
                             finish();
                         } else {
                             BmobQuery<BmobUser> query = new BmobQuery<>();

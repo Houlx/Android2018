@@ -12,7 +12,7 @@
     <uses-permission android:name="android.permission.READ_CONTACTS" />
 
     <!-- <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> -->
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <!-- <uses-permission android:name="android.permission.READ_PHONE_STATE" /> -->
     <uses-permission android:name="android.permission.RECEIVE_USER_PRESENT" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
@@ -36,8 +36,15 @@
         <activity
             android:name=".ContactsActivity"
             android:label="@string/title_activity_contacts"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme">
+            <meta-data
+                android:name="android.app.Searchable"
+                android:resource="@xml/searchable" />
 
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+        </activity>
 
         <service
             android:name="cn.bmob.push.lib.service.PushService"
@@ -48,13 +55,13 @@
                 <action android:name="cn.bmob.push.lib.service.PushService" />
             </intent-filter>
         </service>
-
         <service
             android:name="cn.bmob.push.lib.service.PushNotifyService"
-            android:process=":bmobpush"></service>
+            android:process=":bmobpush" />
 
         <receiver android:name="cn.bmob.push.PushReceiver">
             <intent-filter>
+
                 <!-- 系统启动完成后会调用 -->
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <!-- 解锁完成后会调用 -->
@@ -63,18 +70,16 @@
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
         </receiver>
-
-        <receiver
-            android:name=".MyReceiver">
+        <receiver android:name=".MyReceiver">
             <intent-filter>
                 <action android:name="cn.bmob.push.action.MESSAGE" />
             </intent-filter>
         </receiver>
-
         <receiver
             android:name="cn.bmob.push.PushNotifyReceiver"
             android:process=":bmobpush">
             <intent-filter>
+
                 <!-- 接收心跳广播的action -->
                 <action android:name="cn.bmob.push.action.HEARTBEAT" />
                 <!-- 接收唤醒广播的action -->
@@ -82,6 +87,11 @@
             </intent-filter>
         </receiver>
 
+        <activity
+            android:name=".ContactDetailActivity"
+            android:label="@string/title_activity_contact_detail"
+            android:theme="@style/AppTheme" />
+        <activity android:name=".UpdateUserInfoActivity"></activity>
     </application>
 
 </manifest>
