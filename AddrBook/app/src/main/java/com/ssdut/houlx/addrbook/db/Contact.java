@@ -12,6 +12,7 @@ public class Contact implements Serializable {
     private String phoneOffice;
     private String phonePersonal;
     private String email;
+    private boolean isStar;
 
     public Contact() {
     }
@@ -24,6 +25,14 @@ public class Contact implements Serializable {
         this.nameLetters = nameLetters;
     }
 
+    public boolean isStar() {
+        return isStar;
+    }
+
+    public void setStar(boolean star) {
+        isStar = star;
+    }
+
     public Contact(String name, String office, String phoneOffice, String phonePersonal, String email, String nameLetters) {
         this.name = name;
         this.office = office;
@@ -31,6 +40,7 @@ public class Contact implements Serializable {
         this.phonePersonal = phonePersonal;
         this.email = email;
         this.nameLetters = nameLetters;
+        this.isStar = false;
 
     }
 

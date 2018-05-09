@@ -7,6 +7,7 @@ import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -333,6 +334,9 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
                         if (e == null) {
                             Intent intent = new Intent(SignUpActivity.this, ContactsActivity.class);
                             startActivity(intent);
+                            SharedPreferences.Editor editor = getSharedPreferences("SessionToken", MODE_PRIVATE).edit();
+                            editor.putString("token", bmobUser.getSessionToken());
+                            editor.apply();
                             BmobUser.fetchUserJsonInfo(new FetchUserInfoListener<String>() {
                                 @Override
                                 public void done(String s, BmobException e) {
@@ -365,6 +369,9 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
                                                             Toast.makeText(SignUpActivity.this, "SIGN UP SUCCESS", Toast.LENGTH_SHORT).show();
                                                             Intent intent = new Intent(SignUpActivity.this, ContactsActivity.class);
                                                             startActivity(intent);
+                                                            SharedPreferences.Editor editor = getSharedPreferences("SessionToken", MODE_PRIVATE).edit();
+                                                            editor.putString("token", bmobUser.getSessionToken());
+                                                            editor.apply();
                                                             finish();
                                                         } else {
                                                             Toast.makeText(SignUpActivity.this, "SIGN UP FAILED", Toast.LENGTH_SHORT).show();

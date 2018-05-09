@@ -1,10 +1,14 @@
 package com.ssdut.houlx.addrbook;
 
+import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -32,6 +36,7 @@ import java.util.List;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.FetchUserInfoListener;
 import cn.bmob.v3.listener.FindListener;
 
 /**
@@ -43,11 +48,15 @@ public class ContactsActivity extends AppCompatActivity
     private PinyinComparator comparator;
     private RecyclerView recyclerView;
     private ContactAdapter adapter;
+    private SwipeRefreshLayout swipeRefreshLayout;
     LinearLayoutManager manager;
     SearchView searchView;
 
     private List<Contact> contactList = new ArrayList<>();
     private List<Contact> contactFilterList = new ArrayList<>();
+
+    TextView navUsername;
+    TextView navEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,46 +75,38 @@ public class ContactsActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         View headerView = navigationView.getHeaderView(0);
-        TextView navUsername = headerView.findViewById(R.id.nav_username);
-        TextView navEmail = headerView.findViewById(R.id.nav_email);
+        navUsername = headerView.findViewById(R.id.nav_username);
+        navEmail = headerView.findViewById(R.id.nav_email);
 
         if (BmobUser.getCurrentUser() != null) {
             navUsername.setText(BmobUser.getCurrentUser().getUsername());
             navEmail.setText(BmobUser.getCurrentUser().getEmail());
         }
 
-//        todo: 6.implement user icon here.
-
         comparator = new PinyinComparator();
 
         recyclerView = findViewById(R.id.contact_recyclerView);
-        BmobQuery<Contact> query = new BmobQuery<>();
+        final BmobQuery<Contact> query = new BmobQuery<>();
         query.setLimit(1000);
+        query.setCachePolicy(BmobQuery.CachePolicy.CACHE_ELSE_NETWORK);
         query.findObjects(new FindListener<Contact>() {
             @Override
             public void done(List<Contact> list, BmobException e) {
                 if (e == null && list.size() != 0) {
-                    contactList = list;
-                    for (Contact contact : contactList) {
-                        String pinyin = PinyinUtils.getPinyin(contact.getName());
-                        String sortString = pinyin.substring(0, 1).toUpperCase();
-                        if (sortString.matches("[A-Z]")) {
-                            contact.setNameLetters(sortString.toUpperCase());
-                        } else {
-                            contact.setNameLetters("#");
-                        }
-                    }
-//                    contactFilterList = contactList;
-                    Collections.sort(contactList, comparator);
+                    contactList.addAll(list);
+
+                    fillLetterThenSort();
+
+                    contactFilterList.addAll(contactList);
                     manager = new LinearLayoutManager(ContactsActivity.this);
                     manager.setOrientation(LinearLayoutManager.VERTICAL);
                     recyclerView.setLayoutManager(manager);
-                    adapter = new ContactAdapter(contactList, ContactsActivity.this);
+                    adapter = new ContactAdapter(contactFilterList, ContactsActivity.this);
                     adapter.setOnItemClickListener(new ContactAdapter.OnItemClickListener() {
                         @Override
                         public void onItemClick(View view, int position) {
                             Intent intent = new Intent(ContactsActivity.this, ContactDetailActivity.class);
-                            intent.putExtra("contact", contactList.get(position));
+                            intent.putExtra("contact", contactFilterList.get(position));
                             ContactsActivity.this.startActivity(intent);
                         }
                     });
@@ -114,6 +115,51 @@ public class ContactsActivity extends AppCompatActivity
                 }
             }
         });
+
+        headerView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ContactsActivity.this, UpdateUserInfoActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        swipeRefreshLayout = findViewById(R.id.swipe_fresh);
+        swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                BmobQuery<Contact> query1 = new BmobQuery<>();
+                query1.setLimit(1000);
+                query1.setCachePolicy(BmobQuery.CachePolicy.NETWORK_ELSE_CACHE);
+                query1.findObjects(new FindListener<Contact>() {
+                    @Override
+                    public void done(List<Contact> list, BmobException e) {
+                        contactList.clear();
+                        contactList.addAll(list);
+                        fillLetterThenSort();
+                        contactFilterList.clear();
+                        contactFilterList.addAll(contactList);
+                        adapter.updateList(contactFilterList);
+
+                    }
+                });
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
+    }
+
+    private void fillLetterThenSort() {
+        for (Contact contact : contactList) {
+            String pinyin = PinyinUtils.getPinyin(contact.getName());
+            String sortString = pinyin.substring(0, 1).toUpperCase();
+            if (sortString.matches("[A-Z]")) {
+                contact.setNameLetters(sortString.toUpperCase());
+            } else {
+                contact.setNameLetters("#");
+            }
+        }
+        Collections.sort(contactList, comparator);
     }
 
     @Override
@@ -144,6 +190,7 @@ public class ContactsActivity extends AppCompatActivity
     @Override
     public boolean onQueryTextChange(String newText) {
         if (TextUtils.isEmpty(newText)) {
+            contactFilterList.clear();
             contactFilterList.addAll(contactList);
         } else {
             contactFilterList.clear();
@@ -185,14 +232,18 @@ public class ContactsActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
 
-        } else if (id == R.id.nav_feedback) {
-//            TODO: 4.Feedback Page
+
+        if (id == R.id.nav_feedback) {
+            Uri uri = Uri.parse("https://github.com/Houlx/Android2018/issues");
+            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+            startActivity(intent);
         } else if (id == R.id.nav_about) {
-            //TODO: 5.make an About dialog no need an activity
+            AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+            dialog.setTitle(R.string.about);
+            dialog.setMessage(R.string.copyright);
+            dialog.setCancelable(true);
+            dialog.show();
         } else if (id == R.id.nav_log_out) {
             Intent intent = new Intent(ContactsActivity.this, SignUpActivity.class);
             startActivity(intent);
@@ -203,5 +254,18 @@ public class ContactsActivity extends AppCompatActivity
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        BmobUser.fetchUserJsonInfo(new FetchUserInfoListener<String>() {
+            @Override
+            public void done(String s, BmobException e) {
+
+            }
+        });
+        navUsername.setText(BmobUser.getCurrentUser().getUsername());
+        navEmail.setText(BmobUser.getCurrentUser().getEmail());
     }
 }

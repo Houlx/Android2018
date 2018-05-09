@@ -12,7 +12,6 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
-    <!--todo: 6.create user icon-->
     <!--<ImageView-->
         <!--android:id="@+id/user_icon"-->
         <!--android:layout_width="wrap_content"-->

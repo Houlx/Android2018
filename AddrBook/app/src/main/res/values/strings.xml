@@ -118,4 +118,9 @@
         "when a user tries to pick up one of cards.\n\n"
     </string>
     <string name="username">Username</string>
+    <string name="copyright">Copyright © 2018年 houlx.ssdut. All rights reserved.</string>
+    <string name="old_password">Old Password</string>
+    <string name="new_password">New Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="submit">Submit</string>
 </resources>
