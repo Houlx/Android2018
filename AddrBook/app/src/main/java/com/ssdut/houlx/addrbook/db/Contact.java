@@ -1,9 +1,11 @@
 package com.ssdut.houlx.addrbook.db;
 
+import java.io.Serializable;
+
 /**
  * @author houlx
  */
-public class Contact {
+public class Contact implements Serializable {
     private String name;
     private String nameLetters;
     private String office;

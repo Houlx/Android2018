@@ -1,6 +1,7 @@
 package com.ssdut.houlx.addrbook;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -60,6 +61,8 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
                 @Override
                 public void onClick(View v) {
                     mOnItemClickListener.onItemClick(holder.itemView, position);
+//                    Intent intent = new Intent(mContext, ContactDetailActivity.class);
+//                    mContext.startActivity(intent);
                 }
             });
         }
@@ -69,7 +72,9 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
         holder.contactName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(mContext, ContactDetailActivity.class);
+                intent.putExtra("contact", mContactList.get(position));
+                mContext.startActivity(intent);
             }
         });
     }

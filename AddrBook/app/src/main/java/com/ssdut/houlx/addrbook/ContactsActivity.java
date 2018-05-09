@@ -14,6 +14,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -46,6 +47,7 @@ public class ContactsActivity extends AppCompatActivity
     SearchView searchView;
 
     private List<Contact> contactList = new ArrayList<>();
+    private List<Contact> contactFilterList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,15 +67,14 @@ public class ContactsActivity extends AppCompatActivity
 
         View headerView = navigationView.getHeaderView(0);
         TextView navUsername = headerView.findViewById(R.id.nav_username);
-        if (BmobUser.getCurrentUser().getEmail() == null) {
-            navUsername.setText(BmobUser.getCurrentUser().getObjectId());
-        } else {
-            navUsername.setText(BmobUser.getCurrentUser().getEmail());
+        TextView navEmail = headerView.findViewById(R.id.nav_email);
+
+        if (BmobUser.getCurrentUser() != null) {
+            navUsername.setText(BmobUser.getCurrentUser().getUsername());
+            navEmail.setText(BmobUser.getCurrentUser().getEmail());
         }
 
-        TextView navEmail = headerView.findViewById(R.id.nav_email);
-        navEmail.setText(BmobUser.getCurrentUser().getUsername());
-//        todo: implement user icon here.
+//        todo: 6.implement user icon here.
 
         comparator = new PinyinComparator();
 
@@ -94,11 +95,20 @@ public class ContactsActivity extends AppCompatActivity
                             contact.setNameLetters("#");
                         }
                     }
+//                    contactFilterList = contactList;
                     Collections.sort(contactList, comparator);
                     manager = new LinearLayoutManager(ContactsActivity.this);
                     manager.setOrientation(LinearLayoutManager.VERTICAL);
                     recyclerView.setLayoutManager(manager);
                     adapter = new ContactAdapter(contactList, ContactsActivity.this);
+                    adapter.setOnItemClickListener(new ContactAdapter.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(View view, int position) {
+                            Intent intent = new Intent(ContactsActivity.this, ContactDetailActivity.class);
+                            intent.putExtra("contact", contactList.get(position));
+                            ContactsActivity.this.startActivity(intent);
+                        }
+                    });
                     recyclerView.setAdapter(adapter);
                     recyclerView.addItemDecoration(new DividerItemDecoration(ContactsActivity.this, DividerItemDecoration.VERTICAL));
                 }
@@ -119,12 +129,9 @@ public class ContactsActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-//        TODO: fix search problem
         getMenuInflater().inflate(R.menu.contacts, menu);
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
-        assert searchManager != null;
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setOnQueryTextListener(this);
         return true;
     }
 
@@ -136,6 +143,19 @@ public class ContactsActivity extends AppCompatActivity
 
     @Override
     public boolean onQueryTextChange(String newText) {
+        if (TextUtils.isEmpty(newText)) {
+            contactFilterList.addAll(contactList);
+        } else {
+            contactFilterList.clear();
+            for (Contact contact : contactList) {
+                String name = contact.getName();
+                if (name.contains(newText) || PinyinUtils.getPinyin(contact.getName()).toLowerCase().contains(newText.toLowerCase())) {
+                    contactFilterList.add(contact);
+                }
+            }
+        }
+        Collections.sort(contactFilterList, comparator);
+        adapter.updateList(contactFilterList);
         return true;
     }
 
@@ -170,9 +190,9 @@ public class ContactsActivity extends AppCompatActivity
         } else if (id == R.id.nav_gallery) {
 
         } else if (id == R.id.nav_feedback) {
-//            TODO: Feedback Page
+//            TODO: 4.Feedback Page
         } else if (id == R.id.nav_about) {
-            //TODO: make an About dialog no need an activity
+            //TODO: 5.make an About dialog no need an activity
         } else if (id == R.id.nav_log_out) {
             Intent intent = new Intent(ContactsActivity.this, SignUpActivity.class);
             startActivity(intent);

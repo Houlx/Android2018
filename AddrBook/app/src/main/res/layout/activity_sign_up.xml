@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     android:gravity="center_horizontal"
     android:orientation="vertical"
     tools:context=".SignUpActivity">
@@ -11,12 +12,13 @@
     <!--<include layout="@layout/toolbar"/>-->
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
-        app:title="@string/action_sign_in"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/colorPrimary"
+        android:fitsSystemWindows="true"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:title="@string/action_sign_in">
 
     </android.support.v7.widget.Toolbar>
 
@@ -52,7 +54,7 @@
                     android:id="@+id/email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/prompt_email"
+                    android:hint="@string/username"
                     android:inputType="textEmailAddress"
                     android:maxLines="1"
                     android:singleLine="true" />

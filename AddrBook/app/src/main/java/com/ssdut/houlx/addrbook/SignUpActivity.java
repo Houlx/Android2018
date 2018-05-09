@@ -38,6 +38,8 @@ import android.widget.Toolbar;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
@@ -68,6 +70,8 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+
+    private static Pattern emailPattern = Pattern.compile("^[0-9a-zA-Z_]+$");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -201,7 +205,8 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
     }
 
     private boolean isEmailValid(String email) {
-        return email.contains("@");
+        Matcher matcher = emailPattern.matcher(email);
+        return matcher.matches();
     }
 
     private boolean isPasswordValid(String password) {

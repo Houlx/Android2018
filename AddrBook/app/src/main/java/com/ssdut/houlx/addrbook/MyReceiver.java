@@ -17,7 +17,6 @@ public class MyReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        // TODO: This method is called when the BroadcastReceiver is receiving
         // an Intent broadcast.
         if (Objects.requireNonNull(intent.getAction()).equals(PushConstants.ACTION_MESSAGE)) {
             Log.d("bmob", "客户端收到推送内容："+intent.getStringExtra("msg"));

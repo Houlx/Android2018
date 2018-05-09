@@ -7,7 +7,7 @@
     <string name="prompt_password">Password</string>
     <string name="action_sign_in">Sign In/Sign Up</string>
     <string name="action_sign_in_short">Sign in</string>
-    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_email">Username must be composed of numbers, letters or _</string>
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
@@ -117,4 +117,5 @@
         "For example, position the FAB to one side of stream of a cards so the FAB won’t interfere "
         "when a user tries to pick up one of cards.\n\n"
     </string>
+    <string name="username">Username</string>
 </resources>
