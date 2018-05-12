@@ -67,7 +67,7 @@ public class UpdateUserInfoActivity extends AppCompatActivity {
                         }
                     });
                 } else {
-                    if (newPassword.getText().toString().equals(confirmPassword.getText().toString())) {
+                    if (newPassword.getText().toString().equals(confirmPassword.getText().toString()) && newPassword.getText().toString().length() > 4) {
                         BmobUser.updateCurrentUserPassword(oldPassword.getText().toString(), newPassword.getText().toString(), new UpdateListener() {
                             @Override
                             public void done(BmobException e) {

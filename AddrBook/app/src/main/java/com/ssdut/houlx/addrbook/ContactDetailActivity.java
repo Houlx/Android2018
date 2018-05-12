@@ -39,6 +39,7 @@ public class ContactDetailActivity extends AppCompatActivity {
     private RecyclerView contactDetailRecyclerView;
     private DetailListAdapter adapter;
     private Contact contact;
+    private boolean star;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,11 +50,11 @@ public class ContactDetailActivity extends AppCompatActivity {
 
         ImageView contactBackgroundImage = findViewById(R.id.contact_background_image);
         Glide.with(this).load(R.drawable.timg).into(contactBackgroundImage);
-//        listView = findViewById(R.id.contact_detail_listView);
         contactDetailRecyclerView = findViewById(R.id.contact_detail_recyclerView);
         final Intent intent = getIntent();
         contact = (Contact) intent.getSerializableExtra("contact");
 
+        star = contact.isStar();
 
         int[] imageId = new int[]{
                 R.drawable.ic_phone_indigo_900_36dp,
@@ -101,7 +102,6 @@ public class ContactDetailActivity extends AppCompatActivity {
                 } else if (position == ITEM_EMAIL) {
                     Intent intent1 = new Intent(Intent.ACTION_SEND);
                     intent1.setType("message/rfc822");
-//                    intent1.setType("text/plain");
                     intent1.putExtra(Intent.EXTRA_EMAIL, new String[]{contact.getEmail()});
                     startActivity(Intent.createChooser(intent1, "Select Application"));
                 }
@@ -109,12 +109,30 @@ public class ContactDetailActivity extends AppCompatActivity {
         });
         contactDetailRecyclerView.setAdapter(adapter);
 
-        FloatingActionButton fab = findViewById(R.id.fab);
+        final FloatingActionButton fab = findViewById(R.id.fab);
+        fab.setImageResource(contact.isStar() ? R.drawable.ic_star_lime_a200_24dp : R.drawable.ic_star_white_24dp);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                star = !star;
+                if (star) {
+                    fab.setImageResource(R.drawable.ic_star_lime_a200_24dp);
+                } else {
+                    fab.setImageResource(R.drawable.ic_star_white_24dp);
+                }
+
+                Snackbar.make(view, star ? "Add to favorite list" : "Remove from Favorite List", Snackbar.LENGTH_LONG)
+                        .setAction("Undo", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                star = !star;
+                                if (star) {
+                                    fab.setImageResource(R.drawable.ic_star_lime_a200_24dp);
+                                } else {
+                                    fab.setImageResource(R.drawable.ic_star_white_24dp);
+                                }
+                            }
+                        }).show();
             }
         });
     }
@@ -159,5 +177,13 @@ public class ContactDetailActivity extends AppCompatActivity {
                 break;
             default:
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent();
+        intent.putExtra("star", star);
+        setResult(RESULT_OK, intent);
+        super.onBackPressed();
     }
 }

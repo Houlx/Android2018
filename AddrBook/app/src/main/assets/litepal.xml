@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<litepal>
+    <dbname value="Contact" />
+    <version value="1" />
+    <list>
+        <mapping class="com.ssdut.houlx.addrbook.db.Contact" />
+    </list>
+</litepal>

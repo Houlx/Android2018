@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -26,8 +27,11 @@ import android.support.v7.widget.SearchView;
 import android.view.View;
 import android.widget.HeaderViewListAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ssdut.houlx.addrbook.db.Contact;
+
+import org.litepal.crud.DataSupport;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -51,12 +55,19 @@ public class ContactsActivity extends AppCompatActivity
     private SwipeRefreshLayout swipeRefreshLayout;
     LinearLayoutManager manager;
     SearchView searchView;
+    BottomNavigationView bottomNavigation;
 
     private List<Contact> contactList = new ArrayList<>();
     private List<Contact> contactFilterList = new ArrayList<>();
+    private List<Contact> contactFavList = new ArrayList<>();
 
     TextView navUsername;
     TextView navEmail;
+
+    private int position;
+
+    private boolean optionMenuOn = true;
+    private Menu aMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +89,9 @@ public class ContactsActivity extends AppCompatActivity
         navUsername = headerView.findViewById(R.id.nav_username);
         navEmail = headerView.findViewById(R.id.nav_email);
 
+        bottomNavigation = findViewById(R.id.bottom_navigation);
+        bottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
         if (BmobUser.getCurrentUser() != null) {
             navUsername.setText(BmobUser.getCurrentUser().getUsername());
             navEmail.setText(BmobUser.getCurrentUser().getEmail());
@@ -95,9 +109,24 @@ public class ContactsActivity extends AppCompatActivity
                 if (e == null && list.size() != 0) {
                     contactList.addAll(list);
 
+                    List<Contact> favs = DataSupport.findAll(Contact.class);
+                    for (Contact contact : contactList) {
+                        for (Contact contact1 : favs) {
+                            if (contact.getPhonePersonal().equals(contact1.getPhonePersonal())) {
+                                contact.setStar(true);
+                            }
+                        }
+                    }
+
+
                     fillLetterThenSort();
 
                     contactFilterList.addAll(contactList);
+                    for (Contact contact : contactList) {
+                        if (contact.isStar()) {
+                            contactFavList.add(contact);
+                        }
+                    }
                     manager = new LinearLayoutManager(ContactsActivity.this);
                     manager.setOrientation(LinearLayoutManager.VERTICAL);
                     recyclerView.setLayoutManager(manager);
@@ -106,8 +135,15 @@ public class ContactsActivity extends AppCompatActivity
                         @Override
                         public void onItemClick(View view, int position) {
                             Intent intent = new Intent(ContactsActivity.this, ContactDetailActivity.class);
-                            intent.putExtra("contact", contactFilterList.get(position));
-                            ContactsActivity.this.startActivity(intent);
+
+                            if (bottomNavigation.getMenu().getItem(0).isChecked()) {
+                                intent.putExtra("contact", contactFilterList.get(position));
+                            } else if (bottomNavigation.getMenu().getItem(1).isChecked()) {
+                                intent.putExtra("contact", contactFavList.get(position));
+                            }
+                            ContactsActivity.this.startActivityForResult(intent, 1);
+
+                            ContactsActivity.this.position = position;
                         }
                     });
                     recyclerView.setAdapter(adapter);
@@ -147,7 +183,31 @@ public class ContactsActivity extends AppCompatActivity
                 swipeRefreshLayout.setRefreshing(false);
             }
         });
+
+
     }
+
+    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.navigation_contact:
+                    adapter.updateList(contactFilterList);
+                    optionMenuOn = true;
+                    checkOptionMenu();
+                    swipeRefreshLayout.setEnabled(true);
+                    return true;
+                case R.id.navigation_fav:
+                    adapter.updateList(contactFavList);
+                    optionMenuOn = false;
+                    checkOptionMenu();
+                    swipeRefreshLayout.setEnabled(false);
+                    return true;
+                default:
+            }
+            return false;
+        }
+    };
 
     private void fillLetterThenSort() {
         for (Contact contact : contactList) {
@@ -170,6 +230,13 @@ public class ContactsActivity extends AppCompatActivity
         } else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        aMenu = menu;
+        checkOptionMenu();
+        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
@@ -208,21 +275,7 @@ public class ContactsActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings) {
-//            return true;
-//        } else if (id == R.id.action_log_out) {
-//            Intent intent = new Intent(ContactsActivity.this, SignUpActivity.class);
-//            startActivity(intent);
-//            BmobUser.logOut();
-//            finish();
-//        }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -231,7 +284,6 @@ public class ContactsActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
 
 
         if (id == R.id.nav_feedback) {
@@ -267,5 +319,73 @@ public class ContactsActivity extends AppCompatActivity
         });
         navUsername.setText(BmobUser.getCurrentUser().getUsername());
         navEmail.setText(BmobUser.getCurrentUser().getEmail());
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case 1:
+                if (resultCode == RESULT_OK) {
+                    boolean star = data.getBooleanExtra("star", contactList.get(position).isStar());
+
+                    if (bottomNavigation.getMenu().getItem(0).isChecked()) {
+                        contactList.get(position).setStar(star);
+                        if (star) {
+                            contactList.get(position).save();
+                        }
+                        else {
+                            List<Contact> deleteOne = DataSupport.where("phonePersonal = ?", contactList.get(position).getPhonePersonal()).find(Contact.class);
+
+                            if (deleteOne.size() != 0) {
+                                for (Contact contact : deleteOne) {
+                                    contact.delete();
+                                }
+                            }
+                        }
+                    } else if (bottomNavigation.getMenu().getItem(1).isChecked()) {
+                        contactFavList.get(position).setStar(star);
+                        if (star) {
+                            contactFavList.get(position).save();
+                        }
+                        else {
+                            List<Contact> deleteOne = DataSupport.where("phonePersonal = ?", contactFavList.get(position).getPhonePersonal()).find(Contact.class);
+                            if (deleteOne != null) {
+                                for (Contact contact : deleteOne) {
+                                    contact.delete();
+                                }
+                            }
+                        }
+                        adapter.updateList(contactFavList);
+                    }
+                    contactFavList.clear();
+                    for (Contact contact : contactList) {
+                        if (contact.isStar()) {
+                            contactFavList.add(contact);
+                        }
+                    }
+
+                    contactFilterList.clear();
+                    contactFilterList.addAll(contactList);
+                }
+                break;
+            default:
+        }
+    }
+
+    private void checkOptionMenu() {
+        if (null != aMenu) {
+            if (optionMenuOn) {
+                for (int i = 0; i < aMenu.size(); i++) {
+                    aMenu.getItem(i).setVisible(true);
+                    aMenu.getItem(i).setEnabled(true);
+                }
+            } else {
+                for (int i = 0; i < aMenu.size(); i++) {
+                    aMenu.getItem(i).setVisible(false);
+                    aMenu.getItem(i).setEnabled(false);
+                }
+            }
+        }
     }
 }

@@ -1,18 +1,20 @@
 package com.ssdut.houlx.addrbook.db;
 
+import org.litepal.crud.DataSupport;
+
 import java.io.Serializable;
 
 /**
  * @author houlx
  */
-public class Contact implements Serializable {
+public class Contact extends DataSupport implements Serializable {
     private String name;
     private String nameLetters;
     private String office;
     private String phoneOffice;
     private String phonePersonal;
     private String email;
-    private boolean isStar;
+    private boolean star = false;
 
     public Contact() {
     }
@@ -26,11 +28,11 @@ public class Contact implements Serializable {
     }
 
     public boolean isStar() {
-        return isStar;
+        return star;
     }
 
     public void setStar(boolean star) {
-        isStar = star;
+        this.star = star;
     }
 
     public Contact(String name, String office, String phoneOffice, String phonePersonal, String email, String nameLetters) {
@@ -40,8 +42,7 @@ public class Contact implements Serializable {
         this.phonePersonal = phonePersonal;
         this.email = email;
         this.nameLetters = nameLetters;
-        this.isStar = false;
-
+        this.star = false;
     }
 
     public String getName() {
