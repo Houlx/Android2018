@@ -110,13 +110,13 @@ public class ContactDetailActivity extends AppCompatActivity {
         contactDetailRecyclerView.setAdapter(adapter);
 
         final FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setImageResource(contact.isStar() ? R.drawable.ic_star_lime_a200_24dp : R.drawable.ic_star_white_24dp);
+        fab.setImageResource(contact.isStar() ? R.drawable.ic_star_yellow_800_24dp : R.drawable.ic_star_white_24dp);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 star = !star;
                 if (star) {
-                    fab.setImageResource(R.drawable.ic_star_lime_a200_24dp);
+                    fab.setImageResource(R.drawable.ic_star_yellow_800_24dp);
                 } else {
                     fab.setImageResource(R.drawable.ic_star_white_24dp);
                 }
@@ -127,7 +127,7 @@ public class ContactDetailActivity extends AppCompatActivity {
                             public void onClick(View v) {
                                 star = !star;
                                 if (star) {
-                                    fab.setImageResource(R.drawable.ic_star_lime_a200_24dp);
+                                    fab.setImageResource(R.drawable.ic_star_yellow_800_24dp);
                                 } else {
                                     fab.setImageResource(R.drawable.ic_star_white_24dp);
                                 }
